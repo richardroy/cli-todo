@@ -71,14 +71,16 @@ function prompt(question) {
 
 var CronJob = require('cron').CronJob;
 
+function notify(title, message) {
+    notifier.notify({
+      title,
+      message
+    });
+}
+
 function newTodo() {
 
   // new CronJob('* * * * * *', function() {
-  //   notifier.notify({
-  //     title: 'My notification',
-  //     message: 'Hello, there!',
-  //     reply: true
-  //   });
   // }, null, true, 'America/Los_Angeles');
 
   const q = chalk.blue('Type in your todo\n')
@@ -143,6 +145,9 @@ function activateTodo() {
     db
       .set(`todos[${n-1}].active`, true)
       .write()
+
+    const activeTodo = db.get('todos').nth(n-1).value()
+    notify("New Active Todo", activeTodo.title) 
   }
 }
 
@@ -179,13 +184,16 @@ function deleteTodo() {
 
 
 switch(args[2]) {
+  case 'h':
   case 'help':
     usage()
     break
-  case 'n'|'new':
+  case 'n':
+  case 'new':
     newTodo()
     break
-  case 'g'||'get':
+  case 'g':
+  case 'get':
     getTodos()
     break
   case 'complete':
