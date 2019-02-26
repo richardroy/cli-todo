@@ -6,10 +6,14 @@
     },
     {
       "title": "Change the color",
-      "complete": false
+      "complete": true
     },
     {
       "title": "Remove the change color toDo",
+      "complete": true
+    },
+    {
+      "title": "Add Another",
       "complete": true
     }
   ]
