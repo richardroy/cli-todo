@@ -1,7 +1,7 @@
 {
-  "name": "cli-todo",
+  "name": "@richardroy/cli-todo",
   "version": "1.0.0",
-  "description": "",
+  "description": "A very simple todo that runs within your cli, and will notify you every 5 minutes the task you are currently working on.",
   "main": "index.js",
   "dependencies": {
     "chalk": "^2.4.2",
@@ -18,5 +18,13 @@
     "todo": "./bin/todo"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richardroy/cli-todo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/richardroy/cli-todo/issues"
+  },
+  "homepage": "https://github.com/richardroy/cli-todo#readme"
 }

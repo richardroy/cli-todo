@@ -10,7 +10,7 @@ It has the following available commands:
   -  <deactivate:> used to mark a todo as the inactive item
   -  <help:>       used to print the usage guide
 
-complete / delete / activate / deactivate are all used by passing the id shown when calling get.
+*complete / delete / activate / deactivate are all used by passing the index shown when calling get*
 
 ![Example of complete and delete](./examples/cli-todo.gif)
 
