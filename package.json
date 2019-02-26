@@ -1,0 +1,22 @@
+{
+  "name": "cli-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "cron": "^1.6.0",
+    "lowdb": "^1.0.0",
+    "node-notifier": "^5.4.0"
+  },
+  "preferGlobal": true,
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "todo": "./bin/todo"
+  },
+  "author": "",
+  "license": "ISC"
+}
