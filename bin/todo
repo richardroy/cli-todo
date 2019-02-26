@@ -182,10 +182,10 @@ switch(args[2]) {
   case 'help':
     usage()
     break
-  case 'new':
+  case 'n'|'new':
     newTodo()
     break
-  case 'get':
+  case 'g'||'get':
     getTodos()
     break
   case 'complete':
