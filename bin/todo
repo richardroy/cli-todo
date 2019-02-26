@@ -143,8 +143,8 @@ function activateTodo() {
       .write()
 
     const activeTodo = db.get('todos').nth(n-1).value()
-    console.log(`Working on the following ${chalk.yellow(activeTodo.title)}`)
-    const job = new CronJob('0 */1 * * * *', function() {
+    console.log(`Working on the following: ${chalk.yellow(activeTodo.title)}`)
+    const job = new CronJob('0 */5 * * * *', function() {
       notify("Current todo item", activeTodo.title)
     });
     job.start();
