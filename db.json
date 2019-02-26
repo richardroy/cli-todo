@@ -2,6 +2,16 @@
   "todos": [
     {
       "title": "Test the active intiial value",
+      "complete": true,
+      "active": false
+    },
+    {
+      "title": "update the validateToDoSelection",
+      "complete": true,
+      "active": false
+    },
+    {
+      "title": "Third times the charm",
       "complete": false,
       "active": false
     }

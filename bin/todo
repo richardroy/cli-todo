@@ -103,6 +103,8 @@ function getTodos() {
     if(todo.complete) {
       todoText += ' ✔ ️' // add a check mark
       formattedText = chalk.green(todoText);
+    } else if(todo.active){ 
+      formattedText = chalk.yellow(todoText);
     } else {
       formattedText = chalk.white(todoText);
     }
@@ -114,41 +116,65 @@ function validateToDoSelection() {
   // check that length
   if (args.length != 4) {
     errorLog("invalid number of arguments passed for complete command")
-    return
+    return false
   }
 
   let n = Number(args[3])
   // check if the value is a number
   if (isNaN(n)) {
     errorLog("please provide a valid number for complete command")
-    return
+    return false
   }
 
   // check if correct length of values has been passed
   let todosLength = db.get('todos').value().length
   if (n > todosLength) {
     errorLog("invalid number passed for complete command.")
-    return
+    return false
+  }
+
+  return true
+}
+
+function activateTodo() {
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // update the todo item marked as complete
+    db
+      .set(`todos[${n-1}].active`, true)
+      .write()
+  }
+}
+
+function deactivateTodo() {
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // update the todo item marked as complete
+    db
+      .set(`todos[${n-1}].active`, false)
+      .write()
   }
 }
 
 function completeTodo() {
-  validateToDoSelection()
-
-  // update the todo item marked as complete
-  db
-    .set(`todos[${n-1}].complete`, true)
-    .set(`todos[${n-1}].active`, false)
-    .write()
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // update the todo item marked as complete
+    db
+      .set(`todos[${n-1}].complete`, true)
+      .set(`todos[${n-1}].active`, false)
+      .write()
+  }
 }
 
 function deleteTodo() {
-  validateToDoSelection()
-
-  // delete by title
-  // TODO replace this with a ID in the future
-  const toDo = db.get('todos').nth(n-1).value()
-  db.get('todos').remove({title: toDo.title}).write();
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // delete by title
+    // TODO replace this with a ID in the future
+    const toDo = db.get('todos').nth(n-1).value()
+    db.get('todos').remove({title: toDo.title}).write();
+  }
 }
 
 
@@ -168,6 +194,12 @@ switch(args[2]) {
   case 'delete':
     deleteTodo();
     break;
+  case 'activate':
+    activateTodo();
+    break;
+  case 'deactivate':
+    deactivateTodo();
+    break;  
   default:
     errorLog('invalid command passed')
     usage()
