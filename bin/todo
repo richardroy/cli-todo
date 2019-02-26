@@ -79,10 +79,6 @@ function notify(title, message) {
 }
 
 function newTodo() {
-
-  // new CronJob('* * * * * *', function() {
-  // }, null, true, 'America/Los_Angeles');
-
   const q = chalk.blue('Type in your todo\n')
   prompt(q).then(todo => {
     // add todo
@@ -147,7 +143,11 @@ function activateTodo() {
       .write()
 
     const activeTodo = db.get('todos').nth(n-1).value()
-    notify("New Active Todo", activeTodo.title) 
+    console.log(`Working on the following ${chalk.yellow(activeTodo.title)}`)
+    const job = new CronJob('0 */1 * * * *', function() {
+      notify("Current todo item", activeTodo.title)
+    });
+    job.start();
   }
 }
 
