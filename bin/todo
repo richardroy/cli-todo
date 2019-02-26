@@ -73,13 +73,13 @@ var CronJob = require('cron').CronJob;
 
 function newTodo() {
 
-  new CronJob('* * * * * *', function() {
-    notifier.notify({
-      title: 'My notification',
-      message: 'Hello, there!',
-      reply: true
-    });
-  }, null, true, 'America/Los_Angeles');
+  // new CronJob('* * * * * *', function() {
+  //   notifier.notify({
+  //     title: 'My notification',
+  //     message: 'Hello, there!',
+  //     reply: true
+  //   });
+  // }, null, true, 'America/Los_Angeles');
 
   const q = chalk.blue('Type in your todo\n')
   prompt(q).then(todo => {
@@ -87,7 +87,8 @@ function newTodo() {
     db.get('todos')
       .push({
         title: todo,
-        complete: false
+        complete: false,
+        active: false
       })
       .write()
   })
@@ -135,7 +136,10 @@ function completeTodo() {
   validateToDoSelection()
 
   // update the todo item marked as complete
-  db.set(`todos[${n-1}].complete`, true).write()
+  db
+    .set(`todos[${n-1}].complete`, true)
+    .set(`todos[${n-1}].active`, true)
+    .write()
 }
 
 function deleteTodo() {

@@ -1,20 +1,9 @@
 {
   "todos": [
     {
-      "title": "Create completed feature",
-      "complete": true
-    },
-    {
-      "title": "Change the color",
-      "complete": true
-    },
-    {
-      "title": "Remove the change color toDo",
-      "complete": true
-    },
-    {
-      "title": "Add Another",
-      "complete": true
+      "title": "Test the active intiial value",
+      "complete": false,
+      "active": false
     }
   ]
 }
