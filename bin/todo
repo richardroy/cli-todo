@@ -138,7 +138,7 @@ function completeTodo() {
   // update the todo item marked as complete
   db
     .set(`todos[${n-1}].complete`, true)
-    .set(`todos[${n-1}].active`, true)
+    .set(`todos[${n-1}].active`, false)
     .write()
 }
 
