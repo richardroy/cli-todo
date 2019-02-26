@@ -1,3 +1,7 @@
+#CUSTOM
+db.json
+
+#DEFAULT
 # Logs
 logs
 *.log

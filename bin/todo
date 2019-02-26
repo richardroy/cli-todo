@@ -11,7 +11,7 @@ const db = low(adapter)
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ todos: []}).write()
 
-const commands = ['new', 'get', 'complete', 'delete', 'help']
+const commands = ['new', 'get', 'complete', 'delete', 'help', 'activate', 'deactivate']
 
 const chalk = require('chalk')
 const args = process.argv
@@ -26,11 +26,13 @@ const usage = function() {
 
     commands can be:
 
-    new:      used to create a new todo
-    get:      used to retrieve your todos
-    complete: used to mark a todo as complete
-    delete:   used to remove a todo
-    help:     used to print the usage guide
+    new:        used to create a new todo
+    get:        used to retrieve your todos
+    complete:   used to mark a todo as complete
+    delete:     used to remove a todo
+    activate:   used to mark a todo as the active item
+    deactivate: used to mark a todo as the inactive item
+    help:       used to print the usage guide
   `
 
   console.log(usageText)
@@ -43,7 +45,12 @@ function errorLog(error) {
 }
 
 // we make sure the length of the arguments is exactly three
-if (args.length > 3 && args[2] != 'complete' && args[2] != 'delete') {
+if (args.length > 3 
+  && args[2] != 'complete' 
+  && args[2] != 'delete'
+  && args[2] != 'activate'
+  && args[2] != 'deactivate'
+  ) {
   errorLog(`only one argument can be accepted`)
   usage()
 }
@@ -64,23 +71,22 @@ function prompt(question) {
 
 var CronJob = require('cron').CronJob;
 
-function newTodo() {
-
-  new CronJob('* * * * * *', function() {
+function notify(title, message) {
     notifier.notify({
-      title: 'My notification',
-      message: 'Hello, there!',
-      reply: true
+      title,
+      message
     });
-  }, null, true, 'America/Los_Angeles');
+}
 
+function newTodo() {
   const q = chalk.blue('Type in your todo\n')
   prompt(q).then(todo => {
     // add todo
     db.get('todos')
       .push({
         title: todo,
-        complete: false
+        complete: false,
+        active: false
       })
       .write()
   })
@@ -95,6 +101,8 @@ function getTodos() {
     if(todo.complete) {
       todoText += ' ✔ ️' // add a check mark
       formattedText = chalk.green(todoText);
+    } else if(todo.active){ 
+      formattedText = chalk.yellow(todoText);
     } else {
       formattedText = chalk.white(todoText);
     }
@@ -102,66 +110,89 @@ function getTodos() {
   })
 }
 
-function completeTodo() {
+function validateToDoSelection() {
   // check that length
   if (args.length != 4) {
     errorLog("invalid number of arguments passed for complete command")
-    return
+    return false
   }
 
   let n = Number(args[3])
   // check if the value is a number
   if (isNaN(n)) {
     errorLog("please provide a valid number for complete command")
-    return
+    return false
   }
 
   // check if correct length of values has been passed
   let todosLength = db.get('todos').value().length
   if (n > todosLength) {
     errorLog("invalid number passed for complete command.")
-    return
+    return false
   }
 
-  // update the todo item marked as complete
-  db.set(`todos[${n-1}].complete`, true).write()
+  return true
+}
+
+function activateTodo() {
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // update the todo item marked as complete
+    db
+      .set(`todos[${n-1}].active`, true)
+      .write()
+
+    const activeTodo = db.get('todos').nth(n-1).value()
+    console.log(`Working on the following: ${chalk.yellow(activeTodo.title)}`)
+    const job = new CronJob('0 */5 * * * *', function() {
+      notify("Current todo item", activeTodo.title)
+    });
+    job.start();
+  }
+}
+
+function deactivateTodo() {
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // update the todo item marked as complete
+    db
+      .set(`todos[${n-1}].active`, false)
+      .write()
+  }
+}
+
+function completeTodo() {
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // update the todo item marked as complete
+    db
+      .set(`todos[${n-1}].complete`, true)
+      .set(`todos[${n-1}].active`, false)
+      .write()
+  }
 }
 
 function deleteTodo() {
-  // check that length
-  if (args.length != 4) {
-    errorLog("invalid number of arguments passed for complete command")
-    return
+  if(validateToDoSelection()) {
+    let n = Number(args[3])
+    // delete by title
+    // TODO replace this with a ID in the future
+    const toDo = db.get('todos').nth(n-1).value()
+    db.get('todos').remove({title: toDo.title}).write();
   }
-
-  let n = Number(args[3])
-  // check if the value is a number
-  if (isNaN(n)) {
-    errorLog("please provide a valid number for complete command")
-    return
-  }
-
-  // check if correct length of values has been passed
-  let todosLength = db.get('todos').value().length
-  if (n > todosLength) {
-    errorLog("invalid number passed for complete command.")
-    return
-  }
-
-  // delete by title
-  // TODO replace this with a ID in the future
-  const toDo = db.get('todos').nth(n-1).value()
-  db.get('todos').remove({title: toDo.title}).write();
 }
 
 
 switch(args[2]) {
+  case 'h':
   case 'help':
     usage()
     break
+  case 'n':
   case 'new':
     newTodo()
     break
+  case 'g':
   case 'get':
     getTodos()
     break
@@ -171,6 +202,12 @@ switch(args[2]) {
   case 'delete':
     deleteTodo();
     break;
+  case 'activate':
+    activateTodo();
+    break;
+  case 'deactivate':
+    deactivateTodo();
+    break;  
   default:
     errorLog('invalid command passed')
     usage()
