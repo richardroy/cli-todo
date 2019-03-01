@@ -8,42 +8,98 @@ const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('db.json')
 const db = low(adapter)
 
+const chalk = require('chalk')
+
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ todos: []}).write()
 
 const commands = [
-  {label: 'new', argCount: 0},
-  {label: 'get', argCount: 0},
-  {label: 'complete', argCount: 1},
-  {label: 'delete', argCount: 1},
-  {label: 'help', argCount: 0}, 
-  {label: 'activate', argCount: 1},
-  {label: 'deactivate', argCount: 1}
+  {
+    label: 'new', 
+    argCount: 0,
+    hint: 'used to create a new todo\n\
+          press enter to write the title of your todo item',
+  },
+  {
+    label: 'get',
+    argCount: 0,
+    hint: `used to retrieve your todos\n\
+          ${chalk.white('white')}, incomplete\n\
+          ${chalk.green('green')}, completed\n\
+          ${chalk.yellow('yellow')}, active`
+  },
+  {
+    label: 'complete',
+    argCount: 1,
+    hint: 'used to mark a todo as complete\n\
+          can pass in the todo number, will complete that item'
+  },
+  {
+    label: 'delete',
+    argCount: 1,
+    hint: 'used to remove a todo\n\
+          can pass in the todo number, will delete a single todo item\n\
+          can pass in \'completed\', will delete all of the completed todo items\n\
+          can pass in \'all\', will delete all todo\'s in the list'
+  }, 
+  {
+    label: 'activate',
+    argCount: 1,
+    hint: 'used to mark a todo as the active item\n\
+          can pass in the todo number, will activate that item'
+  },
+  {
+    label: 'deactivate',
+    argCount: 1,
+    hint: 'used to mark a todo as an inactive item\n\
+          can pass in the todo number, will deactivate that item'
+  },  
+  {
+    label: 'help',
+    argCount: 0,
+    hint: 'used to print the usage guide'
+  },
 ]
 
-const chalk = require('chalk')
 const args = process.argv
+
+function getSpaceString(spacesRequired) {
+  let spaceString = ''; 
+  for(let i = 0; i < spacesRequired; i++) {
+    spaceString += ' ';
+  }
+  return spaceString;
+}
 
 // usage represents the help guide
 const usage = function() {
-  const usageText = `
-  todo helps you manage you todo tasks.
+  const usageTextSummary = `
+  todo helps you manage your tasks.
 
   usage:
     todo <command>
 
     commands can be:
-
-    new:        used to create a new todo
-    get:        used to retrieve your todos
-    complete:   used to mark a todo as complete
-    delete:     used to remove a todo
-    activate:   used to mark a todo as the active item
-    deactivate: used to mark a todo as the inactive item
-    help:       used to print the usage guide
   `
+  console.log(usageTextSummary);
+  printCommandHints();
+}
 
-  console.log(usageText)
+function printCommandHints() {
+  let longestLabelLength = 0;
+  for(let i=0; i < commands.length; i++) {
+    let command = commands[i];
+    let labelLength = command.label.length
+    if(labelLength > longestLabelLength){
+      longestLabelLength = labelLength;
+    }
+  }
+
+  for(let i=0; i < commands.length; i++) {
+    let command = commands[i];
+    let spaceString = getSpaceString(longestLabelLength - command.label.length);
+    console.log(`    ${chalk.keyword('orange')(command.label)}:${spaceString} ${command.hint}`);
+  }
 }
 
 // used to log errors to the console in red color
