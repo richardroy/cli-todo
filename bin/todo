@@ -138,6 +138,9 @@ function getTodos() {
     }
     console.log(formattedText);
   })
+  if(todos.length === 0) {
+    console.log('There are none left to do!');
+  }
   console.log('');
 }
 
@@ -203,15 +206,36 @@ function completeTodo() {
 }
 
 function deleteTodo() {
-  if(validateToDoSelection()) {
-    let n = Number(args[3])
-    // delete by title
-    // TODO replace this with a ID in the future
-    const toDo = db.get('todos').nth(n-1).value()
-    db.get('todos').remove({title: toDo.title}).write();
+  let deleteKey = args[3];
+  if(isNaN(deleteKey)){
+    if(deleteKey === 'all') {
+      deleteAllToDos();
+    } else if (deleteKey === 'completed') {
+      deleteCompletedToDos();
+    } else {
+      errorLog('Incorrect delete command');
+      return;
+    }
+  } else {
+    deleteToDoByTitle(deleteKey);
+  }
 
     getTodos();
-  }
+}
+
+function deleteAllToDos() {
+  db.get('todos').remove().write();
+}
+
+function deleteCompletedToDos() {
+  db.get('todos').remove({complete: true}).write();
+}
+
+function deleteToDoByTitle(deleteKey) {
+    // delete by title
+    // TODO replace this with a ID in the future
+    const toDo = db.get('todos').nth(deleteKey-1).value()
+    db.get('todos').remove({title: toDo.title}).write();
 }
 
 if(!validateCommandAndParamaters()){
