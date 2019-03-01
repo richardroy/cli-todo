@@ -1,6 +1,6 @@
 {
   "name": "@richardroy/cli-todo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A very simple todo that runs within your cli, and will notify you every 5 minutes the task you are currently working on.",
   "main": "index.js",
   "dependencies": {
