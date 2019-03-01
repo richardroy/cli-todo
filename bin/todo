@@ -52,7 +52,7 @@ function errorLog(error) {
   console.log(eLog)
 }
 
-function getCommand() {
+function getCommandFromInput() {
   for(let i=0; i < commands.length; i++) {
     let command = commands[i];
     let writtenCommand = args[2];
@@ -63,7 +63,7 @@ function getCommand() {
 }
 
 function validateCommandAndParamaters () {
-  let command = getCommand();
+  let command = getCommandFromInput();
   if(command ){
     if(hasCorrectArgCount(command)) {
       return true;
