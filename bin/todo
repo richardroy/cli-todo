@@ -31,7 +31,7 @@ const commands = [
   {
     label: 'complete',
     argCount: 1,
-    hint: 'used to mark a todo as complete\n\
+    hint: 'used to mark a todo as complete. Will also deactivate active tasks\n\
           can pass in the todo number, will complete that item'
   },
   {
