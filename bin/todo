@@ -11,7 +11,15 @@ const db = low(adapter)
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ todos: []}).write()
 
-const commands = ['new', 'get', 'complete', 'delete', 'help', 'activate', 'deactivate']
+const commands = [
+  {label: 'new', argCount: 0},
+  {label: 'get', argCount: 0},
+  {label: 'complete', argCount: 1},
+  {label: 'delete', argCount: 1},
+  {label: 'help', argCount: 0}, 
+  {label: 'activate', argCount: 1},
+  {label: 'deactivate', argCount: 1}
+]
 
 const chalk = require('chalk')
 const args = process.argv
@@ -44,15 +52,35 @@ function errorLog(error) {
   console.log(eLog)
 }
 
-// we make sure the length of the arguments is exactly three
-if (args.length > 3 
-  && args[2] != 'complete' 
-  && args[2] != 'delete'
-  && args[2] != 'activate'
-  && args[2] != 'deactivate'
-  ) {
-  errorLog(`only one argument can be accepted`)
-  usage()
+function getCommand() {
+  for(let i=0; i < commands.length; i++) {
+    let command = commands[i];
+    let writtenCommand = args[2];
+    if(command.label === writtenCommand)
+      return command;
+  }
+  return null;
+}
+
+function validateCommandAndParamaters () {
+  let command = getCommand();
+  if(command ){
+    if(hasCorrectArgCount(command)) {
+      return true;
+    } else {
+      errorLog('Incorrect number of arguments');
+    }
+  } else {
+    usage();
+  }
+  return false;
+}
+
+function hasCorrectArgCount(command) {
+  // [0]: Default -> interpreter
+  // [1]: Defailt -> full file path
+  // [2]: users written command
+  return command.argCount === (args.length - 3)
 }
 
 function prompt(question) {
@@ -110,15 +138,10 @@ function getTodos() {
     }
     console.log(formattedText);
   })
-  console.log('')
+  console.log('');
 }
 
 function validateToDoSelection() {
-  // check that length
-  if (args.length != 4) {
-    errorLog("invalid number of arguments passed for complete command")
-    return false
-  }
 
   let n = Number(args[3])
   // check if the value is a number
@@ -129,7 +152,7 @@ function validateToDoSelection() {
 
   // check if correct length of values has been passed
   let todosLength = db.get('todos').value().length
-  if (n > todosLength) {
+  if (n > todosLength || n <= 0) {
     errorLog("invalid number passed for complete command.")
     return false
   }
@@ -191,6 +214,9 @@ function deleteTodo() {
   }
 }
 
+if(!validateCommandAndParamaters()){
+  return;
+}
 
 switch(args[2]) {
   case 'h':
