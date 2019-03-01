@@ -11,7 +11,15 @@ const db = low(adapter)
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ todos: []}).write()
 
-const commands = ['new', 'get', 'complete', 'delete', 'help', 'activate', 'deactivate']
+const commands = [
+  {label: 'new', argCount: 0},
+  {label: 'get', argCount: 0},
+  {label: 'complete', argCount: 1},
+  {label: 'delete', argCount: 1},
+  {label: 'help', argCount: 0}, 
+  {label: 'activate', argCount: 1},
+  {label: 'deactivate', argCount: 1}
+]
 
 const chalk = require('chalk')
 const args = process.argv
@@ -44,15 +52,35 @@ function errorLog(error) {
   console.log(eLog)
 }
 
-// we make sure the length of the arguments is exactly three
-if (args.length > 3 
-  && args[2] != 'complete' 
-  && args[2] != 'delete'
-  && args[2] != 'activate'
-  && args[2] != 'deactivate'
-  ) {
-  errorLog(`only one argument can be accepted`)
-  usage()
+function getCommandFromInput() {
+  for(let i=0; i < commands.length; i++) {
+    let command = commands[i];
+    let writtenCommand = args[2];
+    if(command.label === writtenCommand)
+      return command;
+  }
+  return null;
+}
+
+function validateCommandAndParamaters () {
+  let command = getCommandFromInput();
+  if(command ){
+    if(hasCorrectArgCount(command)) {
+      return true;
+    } else {
+      errorLog('Incorrect number of arguments');
+    }
+  } else {
+    usage();
+  }
+  return false;
+}
+
+function hasCorrectArgCount(command) {
+  // [0]: Default -> interpreter
+  // [1]: Defailt -> full file path
+  // [2]: users written command
+  return command.argCount === (args.length - 3)
 }
 
 function prompt(question) {
@@ -89,15 +117,17 @@ function newTodo() {
         active: false
       })
       .write()
+
+    getTodos();
   })
 }
 
 function getTodos() {
   const todos = db.get('todos').value()
   let index = 1;
+  console.log('')
   todos.forEach(todo => {
     let todoText = `${index++}. ${todo.title}`
-    let formattedText = ''
     if(todo.complete) {
       todoText += ' ✔ ️' // add a check mark
       formattedText = chalk.green(todoText);
@@ -108,14 +138,10 @@ function getTodos() {
     }
     console.log(formattedText);
   })
+  console.log('');
 }
 
 function validateToDoSelection() {
-  // check that length
-  if (args.length != 4) {
-    errorLog("invalid number of arguments passed for complete command")
-    return false
-  }
 
   let n = Number(args[3])
   // check if the value is a number
@@ -126,7 +152,7 @@ function validateToDoSelection() {
 
   // check if correct length of values has been passed
   let todosLength = db.get('todos').value().length
-  if (n > todosLength) {
+  if (n > todosLength || n <= 0) {
     errorLog("invalid number passed for complete command.")
     return false
   }
@@ -158,6 +184,8 @@ function deactivateTodo() {
     db
       .set(`todos[${n-1}].active`, false)
       .write()
+
+    getTodos();
   }
 }
 
@@ -169,6 +197,8 @@ function completeTodo() {
       .set(`todos[${n-1}].complete`, true)
       .set(`todos[${n-1}].active`, false)
       .write()
+
+    getTodos();
   }
 }
 
@@ -179,9 +209,14 @@ function deleteTodo() {
     // TODO replace this with a ID in the future
     const toDo = db.get('todos').nth(n-1).value()
     db.get('todos').remove({title: toDo.title}).write();
+
+    getTodos();
   }
 }
 
+if(!validateCommandAndParamaters()){
+  return;
+}
 
 switch(args[2]) {
   case 'h':
