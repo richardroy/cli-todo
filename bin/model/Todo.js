@@ -21,7 +21,7 @@ function getAllTodos() {
   return todos;
 }
 
-function getByTodoByIndex(index) {
+function getTodoByIndex(index) {
   const todo = db.get('todos').nth(index).value()
   return todo;
 }
@@ -45,7 +45,7 @@ function completeTodo(todoIndex) {
     .write()
 }
 
-function deleteAllToDos() {
+function deleteAllTodos() {
   db.get('todos').remove().write();
 }
 
@@ -66,11 +66,11 @@ function deleteToDoWhere(condition) {
 const Todo = {
   createTodo,
   getAllTodos,
-  getByTodoByIndex,
+  getTodoByIndex,
   activateTodo,
   deactivateTodo,
   completeTodo,
-  deleteAllToDos,
+  deleteAllTodos,
   deleteAllCompleteTodos,
   deleteTodoByIndex
 }

@@ -1,290 +1,40 @@
 #!/usr/bin/env node
-const Todo = require('./model/Todo');
-
-const rl = require('readline');
-const notifier = require('node-notifier');
-
-const chalk = require('chalk')
-
-const commands = [
-  {
-    label: 'new', 
-    argCount: 0,
-    hint: 'used to create a new todo\n\
-          press enter to write the title of your todo item',
-  },
-  {
-    label: 'get',
-    argCount: 0,
-    hint: `used to retrieve your todos\n\
-          ${chalk.white('white')}, incomplete\n\
-          ${chalk.green('green')}, completed\n\
-          ${chalk.yellow('yellow')}, active`
-  },
-  {
-    label: 'complete',
-    argCount: 1,
-    hint: 'used to mark a todo as complete. Will also deactivate active tasks\n\
-          can pass in the todo number, will complete that item'
-  },
-  {
-    label: 'delete',
-    argCount: 1,
-    hint: 'used to remove a todo\n\
-          can pass in the todo number, will delete a single todo item\n\
-          can pass in \'completed\', will delete all of the completed todo items\n\
-          can pass in \'all\', will delete all todo\'s in the list'
-  }, 
-  {
-    label: 'activate',
-    argCount: 1,
-    hint: 'used to mark a todo as the active item\n\
-          can pass in the todo number, will activate that item'
-  },
-  {
-    label: 'deactivate',
-    argCount: 1,
-    hint: 'used to mark a todo as an inactive item\n\
-          can pass in the todo number, will deactivate that item'
-  },  
-  {
-    label: 'help',
-    argCount: 0,
-    hint: 'used to print the usage guide'
-  },
-]
+const CommandService = require('./service/CommandService')
+const ToDoService = require('./service/ToDoService')
+const LoggingService = require('./service/LoggingService')
 
 const args = process.argv
 
-function getSpaceString(spacesRequired) {
-  let spaceString = ''; 
-  for(let i = 0; i < spacesRequired; i++) {
-    spaceString += ' ';
-  }
-  return spaceString;
-}
-
-// usage represents the help guide
-const usage = function() {
-  const usageTextSummary = `
-  todo helps you manage your tasks.
-
-  usage:
-    todo <command>
-
-    commands can be:
-  `
-  console.log(usageTextSummary);
-  printCommandHints();
-}
-
-function printCommandHints() {
-  let longestLabelLength = 0;
-  for(let i=0; i < commands.length; i++) {
-    let command = commands[i];
-    let labelLength = command.label.length
-    if(labelLength > longestLabelLength){
-      longestLabelLength = labelLength;
-    }
-  }
-
-  for(let i=0; i < commands.length; i++) {
-    let command = commands[i];
-    let spaceString = getSpaceString(longestLabelLength - command.label.length);
-    console.log(`    ${chalk.keyword('orange')(command.label)}:${spaceString} ${command.hint}`);
-  }
-}
-
-// used to log errors to the console in red color
-function errorLog(error) {
-  const eLog = chalk.red(error)
-  console.log(eLog)
-}
-
-function getCommandFromInput() {
-  for(let i=0; i < commands.length; i++) {
-    let command = commands[i];
-    let writtenCommand = args[2];
-    if(command.label === writtenCommand)
-      return command;
-  }
-  return null;
-}
-
-function validateCommandAndParamaters () {
-  let command = getCommandFromInput();
-  if(command ){
-    if(hasCorrectArgCount(command)) {
-      return true;
-    } else {
-      errorLog('Incorrect number of arguments');
-    }
-  } else {
-    usage();
-  }
-  return false;
-}
-
-function hasCorrectArgCount(command) {
-  // [0]: Default -> interpreter
-  // [1]: Defailt -> full file path
-  // [2]: users written command
-  return command.argCount === (args.length - 3)
-}
-
-function prompt(question) {
-  const r = rl.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-  });
-  return new Promise((resolve, error) => {
-    r.question(question, answer => {
-      r.close()
-      resolve(answer)
-    });
-  })
-}
-
-var CronJob = require('cron').CronJob;
-
-function notify(title, message) {
-    notifier.notify({
-      title,
-      message
-    });
-}
-
-function newTodo() {
-  const q = chalk.blue('Type in your todo\n')
-  prompt(q).then(todo => {
-    Todo.createTodo(todo);
-    getTodos();
-  })
-}
-
-function getTodos() {
-  const todos = Todo.getAllTodos();
-  let index = 1;
-  console.log('')
-  todos.forEach(todo => {
-    let todoText = `${index++}. ${todo.title}`
-    if(todo.complete) {
-      todoText += ' ✔ ️' // add a check mark
-      formattedText = chalk.green(todoText);
-    } else if(todo.active){ 
-      formattedText = chalk.yellow(todoText);
-    } else {
-      formattedText = chalk.white(todoText);
-    }
-    console.log(formattedText);
-  })
-  if(todos.length === 0) {
-    console.log('There are none left to do!');
-  }
-  console.log('');
-}
-
-function validateToDoSelection() {
-
-  let n = Number(args[3])
-  // check if the value is a number
-  if (isNaN(n)) {
-    errorLog("please provide a valid number for complete command")
-    return false
-  }
-
-  // check if correct length of values has been passed
-  let todosLength = Todo.getAllTodos().length
-  if (n > todosLength || n <= 0) {
-    errorLog("invalid number passed for complete command.")
-    return false
-  }
-
-  return true
-}
-
-function activateTodo() {
-  if(validateToDoSelection()) {
-    let n = Number(args[3])
-    // update the todo item marked as complete
-    Todo.activateTodo(n-1);
-
-    const activeTodo = Todo.getTodoByIndex(n-1);
-    console.log(`Working on the following: ${chalk.yellow(activeTodo.title)}`)
-    const job = new CronJob('0 */5 * * * *', function() {
-      notify("Current todo item", activeTodo.title)
-    });
-    job.start();
-  }
-}
-
-function deactivateTodo() {
-  if(validateToDoSelection()) {
-    let n = Number(args[3])
-    // update the todo item marked as complete
-    Todo.deactivateTodo(n-1);
-    getTodos();
-  }
-}
-
-function completeTodo() {
-  if(validateToDoSelection()) {
-    let n = Number(args[3])
-    Todo.completeTodo(n-1);
-    getTodos();
-  }
-}
-
-function deleteTodo() {
-  let deleteKey = args[3];
-  if(isNaN(deleteKey)){
-    if(deleteKey === 'all') {
-      Todo.deleteAllTodos();
-    } else if (deleteKey === 'completed') {
-      Todo.deleteAllCompleteTodos();
-    } else {
-      errorLog('Incorrect delete command');
-      return;
-    }
-  } else {
-    const itemInded = deleteKey-1;
-    Todo.deleteTodoByIndex(itemInded);
-  }
-
-    getTodos();
-}
-
-if(!validateCommandAndParamaters()){
+if(!CommandService.validateCommandAndArguments(args[2], args.length)){
   return;
 }
 
 switch(args[2]) {
   case 'h':
   case 'help':
-    usage()
+    CommandService.showUsageInstruction();
     break
   case 'n':
   case 'new':
-    newTodo()
+    ToDoService.createTodo();
     break
   case 'g':
   case 'get':
-    getTodos()
+    ToDoService.getTodos();
     break
   case 'complete':
-    completeTodo();
+    ToDoService.completeTodo(args[3]);
     break
   case 'delete':
-    deleteTodo();
+    ToDoService.deleteTodo(args[3]);
     break;
   case 'activate':
-    activateTodo();
+    ToDoService.activateTodo(args[3]);
     break;
   case 'deactivate':
-    deactivateTodo();
+    ToDoService.deactivateTodo(args[3]);
     break;  
   default:
-    errorLog('invalid command passed')
-    usage()
+    LoggingService.errorLog('invalid command passed')
+    CommandService.showUsageInstruction();
 }
