@@ -30,6 +30,6 @@
   },
   "homepage": "https://github.com/richardroy/cli-todo#readme",
   "jest": {
-    "coverageReporters": ["text-summary"]
+    "coverageReporters": ["lcov", "text", "text-summary"]
   }
 }

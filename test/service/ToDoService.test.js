@@ -1,7 +1,11 @@
 const ToDoService = require('../../bin/service/ToDoService')
+const InputService = require('../../bin/service/InputService')
+const LoggingService = require('../../bin/service/LoggingService')
 const ToDo = require('../../bin/model/Todo')
 
 jest.mock('../../bin/model/Todo')
+jest.mock('../../bin/service/LoggingService')
+jest.mock('../../bin/service/InputService')
 
 const TODO = {
   title: "Title for test ToDo",
@@ -9,11 +13,125 @@ const TODO = {
   active: false
 }
 
-test('completeToDo: ', () => {
+const TODOS = [
+  TODO
+]
+
+beforeEach(() => {
+  jest.resetAllMocks();
+});
+
+test('createTodo: should create a todo', async () => {
+  const NEW_TODO_TITLE = "new todo";
+  InputService.prompt = jest.fn().mockReturnValue(NEW_TODO_TITLE);
+
+  await ToDoService.createTodo();
+  
+  expect(InputService.prompt).toHaveBeenCalledTimes(1);
+  expect(InputService.prompt).toHaveBeenCalledWith(ToDoService.CREATE_PROMPT);
+
+  expect(ToDo.createTodo).toHaveBeenCalledTimes(1);
+  expect(ToDo.createTodo).toHaveBeenCalledWith(NEW_TODO_TITLE);
+})
+
+test('completeToDo: Should call to complete a single today', () => {
   const selectedToDoIndex = 1;
-  ToDo.getAllTodos = jest.fn().mockReturnValue([TODO]);
+
   ToDoService.completeTodo(selectedToDoIndex);
 
   expect(ToDo.completeTodo).toHaveBeenCalledWith(selectedToDoIndex-1);
   expect(ToDo.completeTodo).toHaveBeenCalledTimes(1);
 });
+
+test('getAllToDos: Should call models get all', () => {
+  ToDo.getAllTodos = jest.fn().mockReturnValue(TODOS)
+  const result = ToDoService.getAllToDos();
+
+  expect(ToDo.getAllTodos).toHaveBeenCalledWith();
+  expect(ToDo.getAllTodos).toHaveBeenCalledTimes(1);
+
+  expect(result).toBe(TODOS);
+});
+
+test('activateToDo: Should activate a todo and schedule a cron', () => {
+  const selectedToDoIndex = 1;
+
+  ToDo.getTodoByIndex = jest.fn().mockReturnValue(TODO);
+
+  ToDoService.activateTodo(selectedToDoIndex);
+
+  expect(ToDo.activateTodo).toHaveBeenCalledWith(selectedToDoIndex-1);
+  expect(ToDo.activateTodo).toHaveBeenCalledTimes(1);
+
+  expect(ToDo.getTodoByIndex).toHaveBeenCalledWith(selectedToDoIndex-1)
+  expect(ToDo.getTodoByIndex).toHaveBeenCalledTimes(1)
+
+  expect(LoggingService.activateLoggingCron).toHaveBeenCalledWith(TODO);
+  expect(LoggingService.activateLoggingCron).toHaveBeenCalledTimes(1);
+})
+
+test('deactivateToDo: Should deactivate a todo', () => {
+  const selectedToDoIndex = 1;
+
+  ToDo.getTodoByIndex = jest.fn().mockReturnValue(TODO);
+
+  ToDoService.deactivateTodo(selectedToDoIndex);
+
+  expect(ToDo.deactivateTodo).toHaveBeenCalledWith(selectedToDoIndex-1);
+  expect(ToDo.deactivateTodo).toHaveBeenCalledTimes(1);
+})
+
+
+test('deleteTodo: Should delete by index', () => {
+  const selectedToDoIndex = 1;
+
+  ToDo.getTodoByIndex = jest.fn().mockReturnValue(TODO);
+
+  ToDoService.deleteTodo(selectedToDoIndex);
+
+  expect(ToDo.getTodoByIndex).toHaveBeenCalledWith(selectedToDoIndex-1)
+  expect(ToDo.getTodoByIndex).toHaveBeenCalledTimes(1)
+
+  expect(ToDo.deleteTodoByIndex).toHaveBeenCalledWith(TODO.title);
+  expect(ToDo.deleteTodoByIndex).toHaveBeenCalledTimes(1);
+
+  expect(ToDo.deleteAllTodos).not.toHaveBeenCalled();
+  expect(ToDo.deleteAllCompleteTodos).not.toHaveBeenCalled();
+})
+
+test('deleteTodo: Should delete all', () => {
+  const deleteType = 'all';
+
+  ToDoService.deleteTodo(deleteType);
+
+  expect(ToDo.deleteAllTodos).toHaveBeenCalledWith()
+  expect(ToDo.deleteAllTodos).toHaveBeenCalledTimes(1)
+
+  expect(ToDo.deleteTodoByIndex).not.toBeCalled();
+  expect(ToDo.deleteAllCompleteTodos).not.toHaveBeenCalled();
+})
+
+test('deleteTodo: Should delete all completed', () => {
+  const deleteType = 'completed';
+
+  ToDoService.deleteTodo(deleteType);
+
+  expect(ToDo.deleteAllCompleteTodos).toHaveBeenCalledWith()
+  expect(ToDo.deleteAllCompleteTodos).toHaveBeenCalledTimes(1)
+
+  expect(ToDo.deleteTodoByIndex).not.toBeCalled();
+  expect(ToDo.deleteAllTodos).not.toHaveBeenCalled();
+})
+
+test('deleteTodo: Throw error, invalid command', () => {
+  const deleteType = 'invalid';
+
+  ToDoService.deleteTodo(deleteType);
+
+  expect(LoggingService.errorLog).toHaveBeenCalledWith("Incorrect delete command")
+  expect(LoggingService.errorLog).toHaveBeenCalledTimes(1)
+
+  expect(ToDo.deleteTodoByIndex).not.toBeCalled();
+  expect(ToDo.deleteAllTodos).not.toHaveBeenCalled();
+  expect(ToDo.deleteAllCompleteTodos).not.toHaveBeenCalled();
+})

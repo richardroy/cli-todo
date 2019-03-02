@@ -1,20 +1,19 @@
-const Input = require('./InputService');
+const InputService = require('./InputService');
 const LoggingService = require('./LoggingService');
 const Todo = require('../model/Todo');
 const chalk = require('chalk')
 
-function createTodo() {
-  const q = chalk.blue('Type in your todo\n')
-  Input.prompt(q).then(todo => {
-    Todo.createTodo(todo);
-    getTodos();
-  })
+
+const CREATE_PROMPT = chalk.blue('Type in your todo\n');
+
+async function createTodo() {
+  const todo = await InputService.prompt(CREATE_PROMPT)
+  Todo.createTodo(todo);
 }
 
 function completeTodo(selectedToDo) {
   let n = Number(selectedToDo)
   Todo.completeTodo(n-1);
-  getTodos();
 }
 
 function getAllToDos() {
@@ -43,8 +42,8 @@ function getTodos() {
   console.log('');
 }
 
-function activateTodo(selectedToDo) {
-  let n = Number(selectedToDo)
+function activateTodo(selectedToDoIndex) {
+  let n = Number(selectedToDoIndex)
   // update the todo item marked as complete
   Todo.activateTodo(n-1);
   const activeTodo = Todo.getTodoByIndex(n-1);
@@ -56,7 +55,6 @@ function deactivateTodo(selectedToDo) {
   let n = Number(selectedToDo)
   // update the todo item marked as complete
   Todo.deactivateTodo(n-1);
-  getTodos();
 }
 
 function deleteTodo(selectedToDo) {
@@ -67,16 +65,13 @@ function deleteTodo(selectedToDo) {
     } else if (deleteKey === 'completed') {
       Todo.deleteAllCompleteTodos();
     } else {
-      errorLog('Incorrect delete command');
-      return;
+      LoggingService.errorLog('Incorrect delete command');
     }
   } else {
     let n = Number(selectedToDo)
     const todo = Todo.getTodoByIndex(n-1);
     Todo.deleteTodoByIndex(todo.title);
   }
-
-  getTodos();
 }
 
 ToDoService = {
@@ -87,5 +82,7 @@ ToDoService = {
   activateTodo,
   deactivateTodo,
   deleteTodo,
+
+  CREATE_PROMPT
 }
 module.exports = ToDoService
