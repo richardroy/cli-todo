@@ -20,7 +20,7 @@ switch(args[2]) {
     break
   case 'g':
   case 'get':
-    ToDoService.getTodos();
+    ToDoService.logOutToDos();
     break
   case 'complete':
     ToDoService.completeTodo(args[3]);

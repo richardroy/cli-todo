@@ -20,7 +20,7 @@ function getAllToDos() {
   return Todo.getAllTodos();
 }
 
-function getTodos() {
+function logOutToDos() {
   const todos = Todo.getAllTodos();
   let index = 1;
   let todoString = '';
@@ -40,7 +40,6 @@ function getTodos() {
     todoString+='\nThere are none left to do!';
   }
   todoString+='\n';
-
   LoggingService.defaultLog(todoString);
 }
 
@@ -80,7 +79,7 @@ ToDoService = {
   createTodo,
   getAllToDos,
   completeTodo,
-  getTodos,
+  logOutToDos,
   activateTodo,
   deactivateTodo,
   deleteTodo,

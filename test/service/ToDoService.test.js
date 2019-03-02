@@ -13,8 +13,22 @@ const TODO = {
   active: false
 }
 
+const COMPLETED_TODO = {
+  title: "Title for test ToDo",
+  complete: true,
+  active: false
+}
+
+const ACTIVE_TODO = {
+  title: "Title for test ToDo",
+  complete: false,
+  active: true
+}
+
 const TODOS = [
-  TODO
+  TODO,
+  COMPLETED_TODO,
+  ACTIVE_TODO
 ]
 
 beforeEach(() => {
@@ -52,6 +66,30 @@ test('getAllToDos: Should call models get all', () => {
 
   expect(result).toBe(TODOS);
 });
+
+test('logOutToDos: Logout all of the ToDos', () => {
+  ToDo.getAllTodos = jest.fn().mockReturnValue(TODOS);
+
+  ToDoService.logOutToDos();
+
+  expect(ToDo.getAllTodos).toHaveBeenCalledTimes(1);
+  expect(ToDo.getAllTodos).toHaveBeenCalledWith();
+
+  expect(LoggingService.defaultLog).toHaveBeenCalledTimes(1);
+})
+
+test('logOutToDos: Notodos in the list', () => {
+  ToDo.getAllTodos = jest.fn().mockReturnValue([]);
+
+  ToDoService.logOutToDos();
+
+  expect(ToDo.getAllTodos).toHaveBeenCalledTimes(1);
+  expect(ToDo.getAllTodos).toHaveBeenCalledWith();
+
+  expect(LoggingService.defaultLog).toHaveBeenCalledTimes(1);
+  expect(LoggingService.defaultLog).toHaveBeenCalledWith('\nThere are none left to do!');
+})
+
 
 test('activateToDo: Should activate a todo and schedule a cron', () => {
   const selectedToDoIndex = 1;
