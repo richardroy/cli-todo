@@ -1,17 +1,10 @@
 #!/usr/bin/env node
+const Todo = require('./model/Todo');
+
 const rl = require('readline');
 const notifier = require('node-notifier');
 
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
-
-const adapter = new FileSync('db.json')
-const db = low(adapter)
-
 const chalk = require('chalk')
-
-// Set some defaults (required if your JSON file is empty)
-db.defaults({ todos: []}).write()
 
 const commands = [
   {
@@ -165,21 +158,13 @@ function notify(title, message) {
 function newTodo() {
   const q = chalk.blue('Type in your todo\n')
   prompt(q).then(todo => {
-    // add todo
-    db.get('todos')
-      .push({
-        title: todo,
-        complete: false,
-        active: false
-      })
-      .write()
-
+    Todo.createTodo(todo);
     getTodos();
   })
 }
 
 function getTodos() {
-  const todos = db.get('todos').value()
+  const todos = Todo.getAllTodos();
   let index = 1;
   console.log('')
   todos.forEach(todo => {
@@ -210,7 +195,7 @@ function validateToDoSelection() {
   }
 
   // check if correct length of values has been passed
-  let todosLength = db.get('todos').value().length
+  let todosLength = Todo.getAllTodos().length
   if (n > todosLength || n <= 0) {
     errorLog("invalid number passed for complete command.")
     return false
@@ -223,11 +208,9 @@ function activateTodo() {
   if(validateToDoSelection()) {
     let n = Number(args[3])
     // update the todo item marked as complete
-    db
-      .set(`todos[${n-1}].active`, true)
-      .write()
+    Todo.activateTodo(n-1);
 
-    const activeTodo = db.get('todos').nth(n-1).value()
+    const activeTodo = Todo.getTodoByIndex(n-1);
     console.log(`Working on the following: ${chalk.yellow(activeTodo.title)}`)
     const job = new CronJob('0 */5 * * * *', function() {
       notify("Current todo item", activeTodo.title)
@@ -240,10 +223,7 @@ function deactivateTodo() {
   if(validateToDoSelection()) {
     let n = Number(args[3])
     // update the todo item marked as complete
-    db
-      .set(`todos[${n-1}].active`, false)
-      .write()
-
+    Todo.deactivateTodo(n-1);
     getTodos();
   }
 }
@@ -251,12 +231,7 @@ function deactivateTodo() {
 function completeTodo() {
   if(validateToDoSelection()) {
     let n = Number(args[3])
-    // update the todo item marked as complete
-    db
-      .set(`todos[${n-1}].complete`, true)
-      .set(`todos[${n-1}].active`, false)
-      .write()
-
+    Todo.completeTodo(n-1);
     getTodos();
   }
 }
@@ -265,33 +240,29 @@ function deleteTodo() {
   let deleteKey = args[3];
   if(isNaN(deleteKey)){
     if(deleteKey === 'all') {
-      deleteAllToDos();
+      Todo.deleteAllTodos();
     } else if (deleteKey === 'completed') {
-      deleteCompletedToDos();
+      Todo.deleteAllCompleteTodos();
     } else {
       errorLog('Incorrect delete command');
       return;
     }
   } else {
-    deleteToDoByTitle(deleteKey);
+    const itemInded = deleteKey-1;
+    Todo.deleteTodoByIndex(itemInded);
   }
 
     getTodos();
 }
 
-function deleteAllToDos() {
-  db.get('todos').remove().write();
-}
-
-function deleteCompletedToDos() {
-  db.get('todos').remove({complete: true}).write();
-}
-
 function deleteToDoByTitle(deleteKey) {
     // delete by title
     // TODO replace this with a ID in the future
-    const toDo = db.get('todos').nth(deleteKey-1).value()
-    db.get('todos').remove({title: toDo.title}).write();
+    const deleteKeyIndex = deleteKey-1;
+    Todo.deleteTodoByIndex(deleteKeyIndex);
+
+        const toDo = Todo.getTodoByIndex(deleteKey-1);
+    toDo.deleteToDoByTitle(toDo.title);
 }
 
 if(!validateCommandAndParamaters()){
