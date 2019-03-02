@@ -3,24 +3,6 @@ const LoggingService = require('./LoggingService');
 const Todo = require('../model/Todo');
 const chalk = require('chalk')
 
-function validateToDoSelection(selectedToDo) {
-  let n = Number(selectedToDo)
-  // check if the value is a number
-  if (isNaN(n)) {
-    LoggingService.errorLog("please provide a valid number for complete command")
-    return false
-  }
-
-  // check if correct length of values has been passed
-  let todosLength = Todo.getAllTodos().length
-  if (n > todosLength || n <= 0) {
-    LoggingService.errorLog("invalid number passed for complete command.")
-    return false
-  }
-
-  return true
-}
-
 function createTodo() {
   const q = chalk.blue('Type in your todo\n')
   Input.prompt(q).then(todo => {
@@ -97,6 +79,24 @@ function deleteTodo(selectedToDo) {
   }
 
   getTodos();
+}
+
+function validateToDoSelection(selectedToDo) {
+  let n = Number(selectedToDo)
+  // check if the value is a number
+  if (isNaN(n)) {
+    LoggingService.errorLog("please provide a valid number for complete command")
+    return false
+  }
+
+  // check if correct length of values has been passed
+  let todosLength = Todo.getAllTodos().length
+  if (n > todosLength || n <= 0) {
+    LoggingService.errorLog("invalid number passed for complete command.")
+    return false
+  }
+
+  return true
 }
 
 ToDoService = {

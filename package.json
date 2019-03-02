@@ -10,9 +10,11 @@
     "node-notifier": "^5.4.0"
   },
   "preferGlobal": true,
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "bin": {
     "todo": "./bin/todo"
@@ -26,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/richardroy/cli-todo/issues"
   },
-  "homepage": "https://github.com/richardroy/cli-todo#readme"
+  "homepage": "https://github.com/richardroy/cli-todo#readme",
+  "jest": {
+    "coverageReporters": ["text-summary"]
+  }
 }
