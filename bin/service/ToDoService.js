@@ -23,7 +23,7 @@ function getAllToDos() {
 function getTodos() {
   const todos = Todo.getAllTodos();
   let index = 1;
-  console.log('')
+  let todoString = '';
   todos.forEach(todo => {
     let todoText = `${index++}. ${todo.title}`
     if(todo.complete) {
@@ -34,12 +34,14 @@ function getTodos() {
     } else {
       formattedText = chalk.white(todoText);
     }
-    console.log(formattedText);
+    todoString+=`\n${formattedText}`;
   })
   if(todos.length === 0) {
-    console.log('There are none left to do!');
+    todoString+='\nThere are none left to do!';
   }
-  console.log('');
+  todoString+='\n';
+
+  LoggingService.defaultLog(todoString);
 }
 
 function activateTodo(selectedToDoIndex) {

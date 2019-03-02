@@ -8,6 +8,10 @@ function errorLog(error) {
   console.log(eLog)
 }
 
+function defaultLog(text) {
+  console.log(text)
+}
+
 function activateLoggingCron(activeTodo) {
   const job = new CronJob('0 */5 * * * *', function() {
     notify("Current todo item:", activeTodo.title)
@@ -24,6 +28,7 @@ function notify(title, message) {
 
 const LoggingService = {
   errorLog,
+  defaultLog,
   activateLoggingCron
 }
 
