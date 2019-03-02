@@ -29,7 +29,8 @@ function notify(title, message) {
 const LoggingService = {
   errorLog,
   defaultLog,
-  activateLoggingCron
+  activateLoggingCron,
+  notify
 }
 
 module.exports = LoggingService

@@ -89,7 +89,7 @@ test('logOutToDos: Notodos in the list', () => {
   expect(ToDo.getAllTodos).toHaveBeenCalledWith();
 
   expect(LoggingService.defaultLog).toHaveBeenCalledTimes(1);
-  expect(LoggingService.defaultLog).toHaveBeenCalledWith('\nThere are none left to do!');
+  expect(LoggingService.defaultLog).toHaveBeenCalledWith('\nThere are none left to do!\n');
 })
 
 test('activateToDo: Should activate a todo and schedule a cron', () => {
