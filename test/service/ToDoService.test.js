@@ -76,6 +76,8 @@ test('logOutToDos: Logout all of the ToDos', () => {
   expect(ToDo.getAllTodos).toHaveBeenCalledWith();
 
   expect(LoggingService.defaultLog).toHaveBeenCalledTimes(1);
+  //TODO test the value that is passed to LoggingService.defaultLog
+  //just need to get the raw string and assert that, havn't been able to do that
 })
 
 test('logOutToDos: Notodos in the list', () => {
@@ -89,7 +91,6 @@ test('logOutToDos: Notodos in the list', () => {
   expect(LoggingService.defaultLog).toHaveBeenCalledTimes(1);
   expect(LoggingService.defaultLog).toHaveBeenCalledWith('\nThere are none left to do!');
 })
-
 
 test('activateToDo: Should activate a todo and schedule a cron', () => {
   const selectedToDoIndex = 1;
