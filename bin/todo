@@ -255,16 +255,6 @@ function deleteTodo() {
     getTodos();
 }
 
-function deleteToDoByTitle(deleteKey) {
-    // delete by title
-    // TODO replace this with a ID in the future
-    const deleteKeyIndex = deleteKey-1;
-    Todo.deleteTodoByIndex(deleteKeyIndex);
-
-        const toDo = Todo.getTodoByIndex(deleteKey-1);
-    toDo.deleteToDoByTitle(toDo.title);
-}
-
 if(!validateCommandAndParamaters()){
   return;
 }
