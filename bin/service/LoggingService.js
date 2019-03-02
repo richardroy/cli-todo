@@ -9,7 +9,7 @@ function errorLog(error) {
 }
 
 function activateLoggingCron(activeTodo) {
-  const job = new CronJob('0 */1 * * * *', function() {
+  const job = new CronJob('0 */5 * * * *', function() {
     notify("Current todo item:", activeTodo.title)
   });
   job.start();
