@@ -5,7 +5,7 @@ const LoggingService = require('./service/LoggingService')
 
 const args = process.argv
 
-if(!CommandService.validateCommandAndArguments(args[2], args.length)){
+if(!CommandService.validateCommandAndArguments(args)){
   return;
 }
 

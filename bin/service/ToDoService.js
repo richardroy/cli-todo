@@ -12,11 +12,13 @@ function createTodo() {
 }
 
 function completeTodo(selectedToDo) {
-  if(validateToDoSelection(selectedToDo)) {
-    let n = Number(selectedToDo)
-    Todo.completeTodo(n-1);
-    getTodos();
-  }
+  let n = Number(selectedToDo)
+  Todo.completeTodo(n-1);
+  getTodos();
+}
+
+function getAllToDos() {
+  return Todo.getAllTodos();
 }
 
 function getTodos() {
@@ -42,23 +44,19 @@ function getTodos() {
 }
 
 function activateTodo(selectedToDo) {
-  if(validateToDoSelection(selectedToDo)) {
-    let n = Number(selectedToDo)
-    // update the todo item marked as complete
-    Todo.activateTodo(n-1);
-    const activeTodo = Todo.getTodoByIndex(n-1);
-    console.log(`Working on the following: ${chalk.yellow(activeTodo.title)}`)
-    LoggingService.activateLoggingCron(activeTodo);
-  }
+  let n = Number(selectedToDo)
+  // update the todo item marked as complete
+  Todo.activateTodo(n-1);
+  const activeTodo = Todo.getTodoByIndex(n-1);
+  console.log(`Working on the following: ${chalk.yellow(activeTodo.title)}`)
+  LoggingService.activateLoggingCron(activeTodo);
 }
 
 function deactivateTodo(selectedToDo) {
-  if(validateToDoSelection(selectedToDo)) {
-    let n = Number(selectedToDo)
-    // update the todo item marked as complete
-    Todo.deactivateTodo(n-1);
-    getTodos();
-  }
+  let n = Number(selectedToDo)
+  // update the todo item marked as complete
+  Todo.deactivateTodo(n-1);
+  getTodos();
 }
 
 function deleteTodo(selectedToDo) {
@@ -81,26 +79,9 @@ function deleteTodo(selectedToDo) {
   getTodos();
 }
 
-function validateToDoSelection(selectedToDo) {
-  let n = Number(selectedToDo)
-  // check if the value is a number
-  if (isNaN(n)) {
-    LoggingService.errorLog("please provide a valid number for complete command")
-    return false
-  }
-
-  // check if correct length of values has been passed
-  let todosLength = Todo.getAllTodos().length
-  if (n > todosLength || n <= 0) {
-    LoggingService.errorLog("invalid number passed for complete command.")
-    return false
-  }
-
-  return true
-}
-
 ToDoService = {
   createTodo,
+  getAllToDos,
   completeTodo,
   getTodos,
   activateTodo,
