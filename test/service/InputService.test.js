@@ -14,6 +14,8 @@ describe('InputService', () => {
     rl.createInterface = jest.fn().mockReturnValue(mockInterface);
 
     await InputService.prompt('question');
+
+    expect(rl.createInterface).toHaveBeenCalledTimes(1);
  
     expect(mockInterface.question).toHaveBeenCalledTimes(1);
     expect(mockInterface.question).toHaveBeenCalledWith('question', expect.anything(Function));
