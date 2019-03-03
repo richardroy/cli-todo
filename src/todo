@@ -1,45 +1,52 @@
 #!/usr/bin/env node
+
 const CommandService = require('./service/CommandService')
 const ToDoService = require('./service/ToDoService')
 const LoggingService = require('./service/LoggingService')
+const InputService = require('./service/InputService')
 
-const args = process.argv
-
-if(!CommandService.validateCommandAndArguments(args)){
-  return;
+function processInput() {
+  const args = InputService.getCommandLineArgs();
+  if(CommandService.validateCommandAndArguments(args)){
+    switch(args[2]) {
+      case 'h':
+      case 'help':
+        CommandService.showUsageInstruction();
+        break
+      case 'n':
+      case 'new':
+        ToDoService.createTodo();
+        ToDoService.logOutToDos();
+        break
+      case 'g':
+      case 'get':
+        ToDoService.logOutToDos();
+        break
+      case 'complete':
+        ToDoService.completeTodo(args[3]);
+        ToDoService.logOutToDos();
+        break
+      case 'delete':
+        ToDoService.deleteTodo(args[3]);
+        ToDoService.logOutToDos();
+        break;
+      case 'activate':
+        ToDoService.activateTodo(args[3]);
+        ToDoService.logOutToDos();
+        break;
+      case 'deactivate':
+        ToDoService.deactivateTodo(args[3]);
+        ToDoService.logOutToDos();
+        break;  
+      default:
+        LoggingService.errorLog('invalid command passed')
+        CommandService.showUsageInstruction();
+    }
+  }
 }
 
-switch(args[2]) {
-  case 'h':
-  case 'help':
-    CommandService.showUsageInstruction();
-    break
-  case 'n':
-  case 'new':
-    ToDoService.createTodo();
-    ToDoService.logOutToDos();
-    break
-  case 'g':
-  case 'get':
-    ToDoService.logOutToDos();
-    break
-  case 'complete':
-    ToDoService.completeTodo(args[3]);
-    ToDoService.logOutToDos();
-    break
-  case 'delete':
-    ToDoService.deleteTodo(args[3]);
-    ToDoService.logOutToDos();
-    break;
-  case 'activate':
-    ToDoService.activateTodo(args[3]);
-    ToDoService.logOutToDos();
-    break;
-  case 'deactivate':
-    ToDoService.deactivateTodo(args[3]);
-    ToDoService.logOutToDos();
-    break;  
-  default:
-    LoggingService.errorLog('invalid command passed')
-    CommandService.showUsageInstruction();
+module.exports = {
+  processInput
 }
+
+processInput();

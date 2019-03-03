@@ -14,8 +14,14 @@ function prompt(question) {
   })
 }
 
+function getCommandLineArgs() {
+  console.log('******************************')
+  return process.argv;
+}
+
 const Input = {
-  prompt
+  prompt,
+  getCommandLineArgs
 }
 
 module.exports = Input;
