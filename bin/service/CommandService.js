@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const LoggingService = require('./LoggingService');
 const ToDoService = require('./ToDoService');
 
-const commands = [
+const COMMANDS = [
   {
     label: 'new', 
     argCount: 0,
@@ -74,7 +74,7 @@ const commands = [
 ]
 
 function getAllCommands() {
-  return commands;
+  return COMMANDS;
 }
 
 function showUsageInstruction() {
@@ -212,6 +212,8 @@ const CommandService = {
   getCommandByLabel,
   validateCommandAndArguments,
   showUsageInstruction,
+
+  COMMANDS,
 }
 
 module.exports = CommandService;
