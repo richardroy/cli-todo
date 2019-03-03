@@ -25,14 +25,13 @@ let TODOS = [
   ACTIVE_TODO
 ]
 
-beforeEach(() => {
-  jest.resetAllMocks();
-  db.setState({});
-  const TODOS_CLONE = JSON.parse(JSON.stringify(TODOS))
-  db.defaults({ todos: TODOS_CLONE }).write()
-});
-
 describe('Todo', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    db.setState({});
+    const TODOS_CLONE = JSON.parse(JSON.stringify(TODOS))
+    db.defaults({ todos: TODOS_CLONE }).write()
+  });
 
   test('createToDo: ', () => {
     const todosOriginal = Todo.getAllTodos();

@@ -1,11 +1,11 @@
-const InputService = require('../../bin/service/InputService')
+const InputService = require('../../src/service/InputService')
 const rl = require('readline');
 
 jest.mock('readline');
 
 describe('InputService', () => {
   test('prompt', async () => {
-    expect.assertions(4);
+    expect.assertions(5);
 
     const mockInterface = {
       question: jest.fn().mockImplementationOnce((question, answer) => answer("y")),

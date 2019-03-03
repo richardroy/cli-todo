@@ -1,7 +1,7 @@
 const CommandService = require('../../src/service/CommandService');
-const LoggingService = require('../../bin/service/LoggingService');
+const LoggingService = require('../../src/service/LoggingService');
 
-jest.mock('../../bin/service/LoggingService');
+jest.mock('../../src/service/LoggingService');
 
 describe('CommandService: ', () => {
 

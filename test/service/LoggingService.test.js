@@ -1,4 +1,4 @@
-const LoggingService = require('../../bin/service/LoggingService');
+const LoggingService = require('../../src/service/LoggingService');
 const chalk = require('chalk');
 const notifier = require('node-notifier');
 const cron = require('cron').CronJob;
