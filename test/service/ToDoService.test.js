@@ -1,11 +1,11 @@
-const ToDoService = require('../../bin/service/ToDoService')
-const InputService = require('../../bin/service/InputService')
-const LoggingService = require('../../bin/service/LoggingService')
-const ToDo = require('../../bin/model/Todo')
+const ToDoService = require('../../src/service/ToDoService')
+const InputService = require('../../src/service/InputService')
+const LoggingService = require('../../src/service/LoggingService')
+const ToDo = require('../../src/model/Todo')
 
-jest.mock('../../bin/model/Todo')
-jest.mock('../../bin/service/LoggingService')
-jest.mock('../../bin/service/InputService')
+jest.mock('../../src/model/Todo')
+jest.mock('../../src/service/LoggingService')
+jest.mock('../../src/service/InputService')
 
 const TODO = {
   title: "Title for test ToDo",

@@ -1,5 +1,5 @@
-const Todo = require('../../bin/model/Todo');
-const db = require('../../bin/model/Database');
+const Todo = require('../../src/model/Todo');
+const db = require('../../src/model/Database');
 
 const DEFAULT_TODO = {
   title: "Title for test ToDo",

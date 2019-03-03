@@ -1,4 +1,4 @@
-const CommandService = require('../../bin/service/CommandService');
+const CommandService = require('../../src/service/CommandService');
 const LoggingService = require('../../bin/service/LoggingService');
 
 jest.mock('../../bin/service/LoggingService');
