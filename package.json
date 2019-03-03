@@ -17,7 +17,7 @@
     "test": "jest --coverage"
   },
   "bin": {
-    "todo": "./bin/todo"
+    "todo": "./src/todo"
   },
   "author": "",
   "license": "ISC",
