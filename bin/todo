@@ -17,6 +17,7 @@ switch(args[2]) {
   case 'n':
   case 'new':
     ToDoService.createTodo();
+    ToDoService.logOutToDos();
     break
   case 'g':
   case 'get':
@@ -24,15 +25,19 @@ switch(args[2]) {
     break
   case 'complete':
     ToDoService.completeTodo(args[3]);
+    ToDoService.logOutToDos();
     break
   case 'delete':
     ToDoService.deleteTodo(args[3]);
+    ToDoService.logOutToDos();
     break;
   case 'activate':
     ToDoService.activateTodo(args[3]);
+    ToDoService.logOutToDos();
     break;
   case 'deactivate':
     ToDoService.deactivateTodo(args[3]);
+    ToDoService.logOutToDos();
     break;  
   default:
     LoggingService.errorLog('invalid command passed')
