@@ -131,8 +131,8 @@ test('deleteTodo: Should delete by index', () => {
   expect(ToDo.getTodoByIndex).toHaveBeenCalledWith(selectedToDoIndex-1)
   expect(ToDo.getTodoByIndex).toHaveBeenCalledTimes(1)
 
-  expect(ToDo.deleteTodoByIndex).toHaveBeenCalledWith(TODO.title);
-  expect(ToDo.deleteTodoByIndex).toHaveBeenCalledTimes(1);
+  expect(ToDo.deleteTodoByTitle).toHaveBeenCalledWith(TODO.title);
+  expect(ToDo.deleteTodoByTitle).toHaveBeenCalledTimes(1);
 
   expect(ToDo.deleteAllTodos).not.toHaveBeenCalled();
   expect(ToDo.deleteAllCompleteTodos).not.toHaveBeenCalled();
@@ -146,7 +146,7 @@ test('deleteTodo: Should delete all', () => {
   expect(ToDo.deleteAllTodos).toHaveBeenCalledWith()
   expect(ToDo.deleteAllTodos).toHaveBeenCalledTimes(1)
 
-  expect(ToDo.deleteTodoByIndex).not.toBeCalled();
+  expect(ToDo.deleteTodoByTitle).not.toBeCalled();
   expect(ToDo.deleteAllCompleteTodos).not.toHaveBeenCalled();
 })
 
@@ -158,7 +158,7 @@ test('deleteTodo: Should delete all completed', () => {
   expect(ToDo.deleteAllCompleteTodos).toHaveBeenCalledWith()
   expect(ToDo.deleteAllCompleteTodos).toHaveBeenCalledTimes(1)
 
-  expect(ToDo.deleteTodoByIndex).not.toBeCalled();
+  expect(ToDo.deleteTodoByTitle).not.toBeCalled();
   expect(ToDo.deleteAllTodos).not.toHaveBeenCalled();
 })
 
@@ -170,7 +170,7 @@ test('deleteTodo: Throw error, invalid command', () => {
   expect(LoggingService.errorLog).toHaveBeenCalledWith("Incorrect delete command")
   expect(LoggingService.errorLog).toHaveBeenCalledTimes(1)
 
-  expect(ToDo.deleteTodoByIndex).not.toBeCalled();
+  expect(ToDo.deleteTodoByTitle).not.toBeCalled();
   expect(ToDo.deleteAllTodos).not.toHaveBeenCalled();
   expect(ToDo.deleteAllCompleteTodos).not.toHaveBeenCalled();
 })

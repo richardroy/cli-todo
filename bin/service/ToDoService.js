@@ -71,7 +71,7 @@ function deleteTodo(selectedToDo) {
   } else {
     let n = Number(selectedToDo)
     const todo = Todo.getTodoByIndex(n-1);
-    Todo.deleteTodoByIndex(todo.title);
+    Todo.deleteTodoByTitle(todo.title);
   }
 }
 
@@ -83,7 +83,7 @@ ToDoService = {
   activateTodo,
   deactivateTodo,
   deleteTodo,
-
+  
   CREATE_PROMPT
 }
 module.exports = ToDoService
