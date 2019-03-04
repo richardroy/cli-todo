@@ -15,7 +15,6 @@ function prompt(question) {
 }
 
 function getCommandLineArgs() {
-  console.log('******************************')
   return process.argv;
 }
 
