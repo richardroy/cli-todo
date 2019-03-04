@@ -1,7 +1,4 @@
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('db.json')
-const db = low(adapter)
+const db = require('../model/Database');
 
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ todos: []}).write()
@@ -54,7 +51,7 @@ function deleteAllCompleteTodos() {
   deleteToDoWhere(isCompleteCondition);
 }
 
-function deleteTodoByIndex(title) {
+function deleteTodoByTitle(title) {
   const hasTitleCondition = {title};
   deleteToDoWhere(hasTitleCondition);
 }
@@ -72,7 +69,7 @@ const Todo = {
   completeTodo,
   deleteAllTodos,
   deleteAllCompleteTodos,
-  deleteTodoByIndex
+  deleteTodoByTitle
 }
 
 module.exports = Todo;

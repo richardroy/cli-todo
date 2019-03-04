@@ -1,6 +1,6 @@
 {
   "name": "@richardroy/cli-todo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A very simple todo that runs within your cli, and will notify you every 5 minutes the task you are currently working on.",
   "main": "index.js",
   "dependencies": {
@@ -10,12 +10,14 @@
     "node-notifier": "^5.4.0"
   },
   "preferGlobal": true,
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "bin": {
-    "todo": "./bin/todo"
+    "todo": "./src/todo"
   },
   "author": "",
   "license": "ISC",
@@ -26,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/richardroy/cli-todo/issues"
   },
-  "homepage": "https://github.com/richardroy/cli-todo#readme"
+  "homepage": "https://github.com/richardroy/cli-todo#readme",
+  "jest": {
+    "coverageReporters": ["lcov", "text", "text-summary"]
+  }
 }
