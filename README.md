@@ -31,7 +31,7 @@ Change into project dir then run: `npm install`
 Trigger the todo via: `./bin/todo <commands>`
 
 ### Global Installation
-run: `npm intall -g @richardroy/cli-todo`  
+run: `npm install -g @richardroy/cli-todo`  
 Then you can access it via: `todo <commands>`
 
 Resources used:  
