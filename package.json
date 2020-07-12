@@ -5,13 +5,13 @@
   "main": "index.js",
   "dependencies": {
     "chalk": "^2.4.2",
-    "cron": "^1.6.0",
+    "cron": "^1.8.2",
     "lowdb": "^1.0.0",
-    "node-notifier": "^5.4.0"
+    "node-notifier": "^5.4.3"
   },
   "preferGlobal": true,
   "devDependencies": {
-    "jest": "^24.1.0"
+    "jest": "^24.9.0"
   },
   "scripts": {
     "test": "jest --coverage"
@@ -30,6 +30,10 @@
   },
   "homepage": "https://github.com/richardroy/cli-todo#readme",
   "jest": {
-    "coverageReporters": ["lcov", "text", "text-summary"]
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "text-summary"
+    ]
   }
 }
