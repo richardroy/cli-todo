@@ -1,6 +1,11 @@
 # Basic Todo for your terminal
-A very simple todo that runs within your cli,   
-Once you activate a task you'll receive an OS notification every five mintues with the todo items task.
+A very simple todo that runs within your terminal,   
+Once you activate a task you'll receive an OS notification 20 minutes after.
+
+# How to Install
+#### npm
+run: `npm install -g @richardroy/cli-todo`  
+Then you can access it via: `todo <commands>`
 
 It has the following available commands:
 
@@ -30,9 +35,10 @@ It has the following available commands:
 Change into project dir then run: `npm install`  
 Trigger the todo via: `./bin/todo <commands>`
 
-### Global Installation
-run: `npm install -g @richardroy/cli-todo`  
-Then you can access it via: `todo <commands>`
+### Running Tests
+`npm run test`
+
+
 
 Resources used:  
 https://scotch.io/tutorials/building-cli-applications-with-nodejs
