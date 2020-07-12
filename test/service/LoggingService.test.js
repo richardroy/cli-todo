@@ -52,7 +52,7 @@ describe('LogginService', () => {
     LoggingService.activateLoggingCron(DEFAULT_TODO);
     const cronMock = cron.mock.instances[0];
     expect(cron).toHaveBeenCalled();
-    expect(cron).toHaveBeenCalledWith('0 */5 * * * *', expect.anything(Function));
+    expect(cron).toHaveBeenCalledWith('0 */20 * * * *', expect.anything(Function));
     expect(cronMock.start).toHaveBeenCalledTimes(1);
     expect(cronMock.start).toHaveBeenCalledWith();
 
