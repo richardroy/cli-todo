@@ -1,9 +1,10 @@
 {
   "name": "@richardroy/cli-todo",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A very simple todo that runs within your cli, and will notify you every 5 minutes the task you are currently working on.",
   "main": "index.js",
   "dependencies": {
+    "app-root-path": "^2.2.1",
     "chalk": "^2.4.2",
     "cron": "^1.8.2",
     "lowdb": "^1.0.0",

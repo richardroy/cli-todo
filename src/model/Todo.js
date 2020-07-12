@@ -1,4 +1,4 @@
-const db = require('../model/Database');
+const db = require('./Database');
 
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ todos: []}).write()

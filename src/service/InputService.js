@@ -1,14 +1,15 @@
-const rl = require('readline');
+const readLine = require('readline');
 
 function prompt(question) {
-  const r = rl.createInterface({
+  const read = readLine.createInterface({
     input: process.stdin,
     output: process.stdout,
     terminal: false
   });
+
   return new Promise((resolve, error) => {
-    r.question(question, answer => {
-      r.close()
+    read.question(question, answer => {
+      read.close()
       resolve(answer)
     });
   })

@@ -13,7 +13,7 @@ function defaultLog(text) {
 }
 
 function activateLoggingCron(activeTodo) {
-  const job = new CronJob('0 */5 * * * *', function() {
+  const job = new CronJob('0 */20 * * * *', function() {
     notify('Current todo item:', activeTodo.title)
   });
   job.start();

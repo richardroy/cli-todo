@@ -1,6 +1,7 @@
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('db.json')
+var myModulePath = require('app-root-path')
+const adapter = new FileSync(`${myModulePath}/db.json`)
 const db = low(adapter)
 
 module.exports = db;
