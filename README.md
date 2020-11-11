@@ -33,7 +33,7 @@ It has the following available commands:
 
 ### Running Locally
 Change into project dir then run: `npm install`  
-Trigger the todo via: `./bin/todo <commands>`
+Trigger the todo via: `./src/todo <commands>`
 
 ### Running Tests
 `npm run test`
